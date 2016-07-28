@@ -6,7 +6,7 @@
     .controller('LoginController', LoginController);
 
   /** @ngInject */
-  function LoginController($timeout, $rootScope, webDevTec, toastr, fitBitAuth) {
+  function LoginController($timeout, $rootScope, $location, toastr, fitBitAuth, pointsBoostAPI) {
 
     var vm = this;
 
@@ -25,12 +25,21 @@
       }, 4000);
     }
 
-    this.authorizeFitBit = function() {
-      fitBitAuth.authorize()
+    this.logIn = function() {
+      pointsBoostAPI.logOut();
+      fitBitAuth.authorize().then(function (token) {
+        showLoggedInMsg();
+        pointsBoostAPI.user(token).then(function () {
+          $location.path("/");
+        })
+      })
       showLoginMsg();
     }
 
 
+    function showLoggedInMsg() {
+      toastr.info('Retrieving your data.');
+    }
     function showLoginMsg() {
       toastr.info('Logging you in. Follow the instructions on the open window.');
       vm.classAnimation = '';

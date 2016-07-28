@@ -6,7 +6,7 @@
     .factory('fitBitAuth', fitBitAuth);
 
   /** @ngInject */
-  function fitBitAuth($log, $http, $window, $httpParamSerializer, $cookies, $interval, $location, locationHash) {
+  function fitBitAuth($log, $http, $window, $httpParamSerializer, $cookies, $interval, $location, $q, locationHash) {
 
 
     var TOKEN_COOKIE = 'FITBIT_TOKEN'
@@ -67,6 +67,8 @@
 
     function authorize() {
 
+      var deferred  = $q.defer();
+
       var authorizeOpts = {
         'response_type': 'token',
         'client_id': clientId,
@@ -79,17 +81,19 @@
       var fullUrl = authorizeUri + "?" + qs;
       console.log("Opening auth: " + fullUrl)
       _openPopup(fullUrl);
-      _kickOffAuthCheck();
+      _kickOffAuthCheck(deferred);
+
+      return deferred.promise;
     }
 
-    function _kickOffAuthCheck() {
+    function _kickOffAuthCheck(deferred) {
       if (authCheckTimer != null) {
         $interval.cancel(authCheckTimer);
       }
       authCheckTimer = $interval(function() {
         if (isAuthenticated()) {
           $interval.cancel(authCheckTimer);
-          $location.path('/');
+          deferred.resolve(getToken());
         }
       }, 2000)
     }
@@ -114,12 +118,11 @@
     var locationHash = "";
 
     this.setLocationHash = function(value) {
-      console.log("Setting locatioun " + value)
       locationHash = value;
     };
 
-    this.$get = function($log, $http, $window, $cookies, $httpParamSerializer, $location, $interval) {
-      return new fitBitAuth($log, $http, $window, $httpParamSerializer, $cookies, $interval, $location, locationHash)
+    this.$get = function($log, $http, $window, $cookies, $httpParamSerializer, $location, $interval, $q) {
+      return new fitBitAuth($log, $http, $window, $httpParamSerializer, $cookies, $interval, $location, $q, locationHash)
     }
   }
 })();

@@ -28,21 +28,19 @@
       });
   }
 
-  var checkRouting = function($q, $location, $window, fitBitAuth) {
+  var checkRouting = function($q, $location, $window, fitBitAuth, pointsBoostAPI) {
     var deferred = $q.defer();
 
     // We're already authenticated.
-    if (fitBitAuth.isAuthenticated()) {
+    if (pointsBoostAPI.getCurrentUser()) {
       return true;
-
-      // We're authenticating (this page was loaded as a result of fitbit redirect_uri)
     } else if (fitBitAuth.authenticate()) {
-      $window.close();
-
-      // We're not logged in
+        // Success!
+        $window.close();  
     } else {
-      deferred.reject();
-      $location.path("/login")
+        // Couldn't log you in.
+        deferred.reject();
+        $location.path("/login")
     }
     return deferred.promise;
   };

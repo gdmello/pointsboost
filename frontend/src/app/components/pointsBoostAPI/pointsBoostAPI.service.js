@@ -6,18 +6,45 @@
     .factory('pointsBoostAPI', pointsBoostAPI);
 
   /** @ngInject */
-  function pointsBoostAPI($log, $http) {
+  function pointsBoostAPI($log, $http, $cookies) {
+    
+    var USER_ID_COOKIE = 'POINTSBOOST_USER_ID';
+
     var apiHost = 'http://127.0.0.1:5000';
+    var currentUser = null;
 
     var service = {
       apiHost: apiHost,
       user: user,
+      getCurrentUser: getCurrentUser,
+      setCurrentUser: setCurrentUser,
+      logOut: logOut,
       newChallenges: newChallenges,
       acceptedChallenges: acceptedChallenges,
       enrollInAChallenge: enrollInAChallenge
     };
 
     return service;
+
+    function getCurrentUser() {
+      if (!currentUser) {
+        currentUser = $cookies.getObject(USER_ID_COOKIE)
+      }
+
+      return currentUser;
+    }
+
+    function setCurrentUser(user) {
+      $log.info("Setting current user", user)
+      currentUser = user;
+      $cookies.putObject(USER_ID_COOKIE, user);
+    }
+    
+
+    function logOut() {
+      $log.info("Logging out.")
+      setCurrentUser(null)
+    }
 
     function user(fitbit_token) {
 
@@ -26,7 +53,9 @@
         .catch(userFailed);
 
       function userComplete(response) {
-        $log.info(angular.toJson(response.data));
+        var respJson = response.data;
+        setCurrentUser(respJson);
+        return true;
       }
 
       function userFailed(error) {

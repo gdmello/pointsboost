@@ -18,7 +18,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/users', methods=['POST'])
+@app.route('/user', methods=['POST'])
 def fitbit_user():
     """
         POST /user?fitbit_token=<aaa>
