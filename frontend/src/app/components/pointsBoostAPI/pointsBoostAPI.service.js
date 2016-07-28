@@ -16,14 +16,14 @@
 
     return service;
 
-    function user(accessToken) {
+    function user(fitbit_token) {
 
-      return $http.post(apiHost + '/user?accessToken=' + accessToken)
+      return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token)
         .then(userComplete)
         .catch(userFailed);
 
       function userComplete(response) {
-        return response.data;
+        $log.info(angular.toJson(response.data));
       }
 
       function userFailed(error) {
