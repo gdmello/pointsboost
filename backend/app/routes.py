@@ -52,5 +52,22 @@ def user_challenge(challenge_id, user_id):
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
+@app.route('challenges/_expire', methods=['POST'])
+def expire_user_challenges():
+    """
+        POST /challenges/_expire
+        When invoked, this endpoint will go through all the expired challenges and
+        update the status of all users who have accepted this challenge.
+    :param challenge_id:
+    :param user_id:
+    :return:
+    """
+    user = [{
+        'challengeId': 777,
+        'userId': 333
+    }]
+    return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
