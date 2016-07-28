@@ -1,0 +1,22 @@
+import httplib
+import json
+
+from flask import Flask, render_template, request, Response
+
+
+app = Flask(__name__)
+
+
+# POST /user?fitbit_token=<aaa>
+@app.route('/user', methods=['POST'])
+def fitbit_user():
+    fitbit_token = request.args.get('fitbit_token', '')
+    user = {
+        'fitbitToken': fitbit_token,
+        'identifier': 123
+    }
+    return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
