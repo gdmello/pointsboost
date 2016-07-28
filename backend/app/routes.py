@@ -18,11 +18,12 @@ def fitbit_user():
 
 
 @app.route('/user/<userid>/challenges/_<status>', methods=['GET'])
-def challenge_status():
+def challenge_status(userid, status):
     challenges = [{
         'challengeName': 'some name',
         'identifier': 123,
-        'status': 'somestatus'
+        'userIdentifier': userid,
+        'status': status
     }]
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
