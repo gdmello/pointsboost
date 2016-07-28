@@ -33,16 +33,20 @@
       el.addClass('acme-malarkey');
 
       angular.forEach(scope.extraValues, function(value) {
-        typist.type(value).pause().delete();
+        typist.type(value)
+          .pause()
+          .delete();
       });
 
       watcher = scope.$watch('vm.contributors', function() {
         angular.forEach(vm.contributors, function(contributor) {
-          typist.type(contributor.login).pause().delete();
+          typist.type(contributor.login)
+            .pause()
+            .delete();
         });
       });
 
-      scope.$on('$destroy', function () {
+      scope.$on('$destroy', function() {
         watcher();
       });
     }
@@ -56,17 +60,19 @@
       activate();
 
       function activate() {
-        return getContributors().then(function() {
-          $log.info('Activated Contributors View');
-        });
+        return getContributors()
+          .then(function() {
+            $log.info('Activated Contributors View');
+          });
       }
 
       function getContributors() {
-        return githubContributor.getContributors(10).then(function(data) {
-          vm.contributors = data;
+        return githubContributor.getContributors(10)
+          .then(function(data) {
+            vm.contributors = data;
 
-          return vm.contributors;
-        });
+            return vm.contributors;
+          });
       }
     }
 
