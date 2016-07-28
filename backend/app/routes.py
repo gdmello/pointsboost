@@ -6,9 +6,11 @@ from flask import Flask, render_template, request, Response
 app = Flask(__name__)
 
 
-# POST /user?fitbit_token=<aaa>
 @app.route('/user', methods=['POST'])
 def fitbit_user():
+    """
+        POST /user?fitbit_token=<aaa>
+    """
     fitbit_token = request.args.get('fitbit_token', '')
     user = {
         'fitbitToken': fitbit_token,
@@ -19,6 +21,13 @@ def fitbit_user():
 
 @app.route('/user/<userid>/challenges/_<status>', methods=['GET'])
 def challenge_status(userid, status):
+    """
+    GET /user/<userid>/challenges/_new
+    GET /user/<userid>/challenges/_accepted
+    :param userid:
+    :param status:
+    :return:
+    """
     challenges = [{
         'challengeName': 'some name',
         'identifier': 123,
