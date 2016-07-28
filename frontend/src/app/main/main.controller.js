@@ -6,7 +6,7 @@
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($timeout, webDevTec, toastr, pointsBoostAPI) {
+  function MainController($timeout, webDevTec, toastr, pointsBoostAPI, fitBitAuth) {
     var vm = this;
 
     vm.awesomeThings = [];
@@ -16,8 +16,14 @@
 
     activate();
 
+
     function activate() {
       pointsBoostAPI.user("fakeToken123");
+      pointsBoostAPI.newChallenges('RajanRoy');
+      pointsBoostAPI.acceptedChallenges('RajanRoy');
+      pointsBoostAPI.enrollInAChallenge('RajanRoy', '10K_Run');
+      pointsBoostAPI.user("fakeToken123");
+      vm.accessToken = fitBitAuth.getToken()
       getWebDevTec();
       $timeout(function() {
         vm.classAnimation = 'rubberBand';
