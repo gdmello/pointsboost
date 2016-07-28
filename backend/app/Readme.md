@@ -7,3 +7,9 @@ setup virtualenv
     $ mkvirtualenv pointsboost
     $ cd frontend
     $ pip install -r requirements.txt
+
+Run
+---
+```
+$ python backend/app/routes.py 
+```
