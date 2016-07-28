@@ -1,5 +1,6 @@
 import httplib
 import json
+import sqlite3
 
 from flask import Flask, request, Response
 
@@ -17,7 +18,7 @@ def fitbit_user():
         'userId': 123
     }
 
-    # Get users fitbit email and points balance.
+    # Get users fitbit email and current step count.
 
     # Save the user model in the database
 
@@ -42,7 +43,7 @@ def challenge_status(user_id, status):
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
-@app.route('challenges/<challenge_id>/user/<user_id>', methods=['POST'])
+@app.route('/challenges/<challenge_id>/user/<user_id>', methods=['POST'])
 def user_challenge(challenge_id, user_id):
     """
         POST /challenges/<challenge_id>/user/<user_id>
@@ -57,7 +58,7 @@ def user_challenge(challenge_id, user_id):
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
-@app.route('challenges/_expire', methods=['POST'])
+@app.route('/challenges/_expire', methods=['POST'])
 def expire_user_challenges():
     """
         POST /challenges/_expire
@@ -74,5 +75,24 @@ def expire_user_challenges():
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
+def initialize_db():
+    connection = sqlite3.connect('pointsboost.db')
+    cursor = connection.cursor()
+    cursor.execute(''' CREATE TABLE IF NOT EXISTS users
+                        (identifier integer PRIMARY KEY ASC, email text, name text, loyalty_program_user_id text,
+                        fitbit_access_token text, fitbit_refresh_token text, fitbit_token_expiry text,
+                        fitbit_id text)''')
+    cursor.execute(''' CREATE TABLE IF NOT EXISTS challenge
+                        (identifier integer PRIMARY KEY ASC, name text, steps_to_unlock integer, loyalty_program_merchant_user_id text,
+                        expiry_timestamp text, reward_points integer)''')
+    cursor.execute(''' CREATE TABLE IF NOT EXISTS user_challenge
+                        (user_identifier integer, challenge_identifier integer,
+                        user_total_step_count_on_start integer, user_total_step_count_on_expiry integer,
+                        status text, PRIMARY KEY (user_identifier, challenge_identifier),
+                        FOREIGN KEY(user_identifier) REFERENCES users(identifier),
+                        FOREIGN KEY(challenge_identifier) REFERENCES challenge(identifier))''')
+
+
 if __name__ == '__main__':
+    initialize_db()
     app.run(debug=True)
