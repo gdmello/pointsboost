@@ -3,7 +3,6 @@ import json
 
 from flask import Flask, render_template, request, Response
 
-
 app = Flask(__name__)
 
 
@@ -18,14 +17,15 @@ def fitbit_user():
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
-@app.route('/user', methods=['POST'])
-def fitbit_user():
-    fitbit_token = request.args.get('fitbit_token', '')
-    user = {
-        'fitbitToken': fitbit_token,
-        'identifier': 123
-    }
-    return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+@app.route('/user/<userid>/challenges/_<status>', methods=['GET'])
+def challenge_status():
+    challenges = [{
+        'challengeName': 'some name',
+        'identifier': 123,
+        'status': 'somestatus'
+    }]
+    return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
