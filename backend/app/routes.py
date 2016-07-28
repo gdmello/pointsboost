@@ -1,8 +1,16 @@
 import httplib
 import json
 import sqlite3
+import logging
+import sys
 
 from flask import Flask, request, Response
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
 
 app = Flask(__name__)
 
@@ -13,6 +21,7 @@ def fitbit_user():
         POST /user?fitbit_token=<aaa>
     """
     fitbit_token = request.args.get('fitbit_token', '')
+    logger.debug('Creating user with token %s', fitbit_token)
     user = {
         'fitbitToken': fitbit_token,
         'userId': 123
@@ -76,6 +85,7 @@ def expire_user_challenges():
 
 
 def initialize_db():
+    logger.debug('Initializing database ...')
     connection = sqlite3.connect('pointsboost.db')
     cursor = connection.cursor()
     cursor.execute(''' CREATE TABLE IF NOT EXISTS users
