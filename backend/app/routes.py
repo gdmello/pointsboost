@@ -42,7 +42,7 @@ def challenge_status(user_id, status):
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
-@app.route('challenges/<challenge_id>/user/<user_id>', methods=['POST'])
+@app.route('/challenges/<challenge_id>/user/<user_id>', methods=['POST'])
 def user_challenge(challenge_id, user_id):
     """
         POST /challenges/<challenge_id>/user/<user_id>
@@ -57,7 +57,7 @@ def user_challenge(challenge_id, user_id):
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
-@app.route('challenges/_expire', methods=['POST'])
+@app.route('/challenges/_expire', methods=['POST'])
 def expire_user_challenges():
     """
         POST /challenges/_expire

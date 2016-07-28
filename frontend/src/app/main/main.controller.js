@@ -6,7 +6,7 @@
     .controller('MainController', MainController);
 
   /** @ngInject */
-  function MainController($timeout, webDevTec, toastr) {
+  function MainController($timeout, webDevTec, toastr, pointsBoostAPI) {
     var vm = this;
 
     vm.awesomeThings = [];
@@ -17,6 +17,7 @@
     activate();
 
     function activate() {
+      pointsBoostAPI.user("fakeToken123");
       getWebDevTec();
       $timeout(function() {
         vm.classAnimation = 'rubberBand';
