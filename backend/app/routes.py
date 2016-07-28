@@ -1,6 +1,5 @@
 import httplib
 import json
-import sqlite3
 import logging
 import sys
 
@@ -49,12 +48,7 @@ def challenge_status(user_id, status):
     :param status:
     :return:
     """
-    challenges = [{
-        'challengeName': 'some name',
-        'challengeId': 123,
-        'userId': user_id,
-        'status': status
-    }]
+    challenges = database.user_challenges(user_id, status)
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
@@ -93,4 +87,5 @@ def expire_user_challenges():
 if __name__ == '__main__':
     logger.debug('Initializing database ...')
     database.initialize()
+    database.seed_challenges()
     app.run(debug=True)
