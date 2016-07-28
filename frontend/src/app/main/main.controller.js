@@ -18,6 +18,9 @@
 
     function activate() {
       pointsBoostAPI.user("fakeToken123");
+      pointsBoostAPI.newChallenges('RajanRoy');
+      pointsBoostAPI.acceptedChallenges('RajanRoy');
+      pointsBoostAPI.enrollInAChallenge('RajanRoy', '10K_Run');
       getWebDevTec();
       $timeout(function() {
         vm.classAnimation = 'rubberBand';
