@@ -7,12 +7,7 @@
 
   /** @ngInject */
   function fitBitAuth($log, $http, $window, $httpParamSerializer, $cookies, $interval, $location, $q, locationHash) {
-
-
-    var TOKEN_COOKIE = 'FITBIT_TOKEN'
-
-    // Implicit grant flow
-
+    var FITBIT_ACCESS_TOKEN_COOKIE = 'FITBIT_ACCESS_TOKEN_COOKIE'
     var clientId = '227QRF'
     var clientSecret = 'aacdb90aaaa175c50e0556e1a50f35ab'
     var authScopes = ["activity", "nutrition", "heartrate", "location", "nutrition", "profile", "settings", "sleep", "social", "weight"]
@@ -20,7 +15,7 @@
     var authorizeUri = 'https://www.fitbit.com/oauth2/authorize'
 
     var accessToken = "";
-    var authCheckTimer = null;
+    var _authCheckTimer = null;
 
     var service = {
       authorize: authorize,
@@ -43,14 +38,14 @@
 
     function getToken() {
       if (!accessToken) {
-        accessToken = $cookies.get(TOKEN_COOKIE, accessToken);
+        accessToken = $cookies.get(FITBIT_ACCESS_TOKEN_COOKIE);
       }
       return accessToken;
     }
 
     function setToken(token) {
-      accessToken = token
-      $cookies.put(TOKEN_COOKIE, accessToken);
+      accessToken = token;
+      $cookies.put(FITBIT_ACCESS_TOKEN_COOKIE, token);
     }
 
     function authenticate() {
@@ -59,6 +54,7 @@
         if (parsed.length > 0) {
           var token = parsed[1];
           setToken(token)
+
           return true;
         }
       }
@@ -66,9 +62,10 @@
     }
 
     function authorize() {
-
+      // Clear out existing tokens.
       var deferred  = $q.defer();
 
+      setToken("");
       var authorizeOpts = {
         'response_type': 'token',
         'client_id': clientId,
@@ -87,15 +84,17 @@
     }
 
     function _kickOffAuthCheck(deferred) {
-      if (authCheckTimer != null) {
-        $interval.cancel(authCheckTimer);
+      if (_authCheckTimer != null) {
+        $interval.cancel(_authCheckTimer);
       }
-      authCheckTimer = $interval(function() {
+      _authCheckTimer = $interval(function() {
         if (isAuthenticated()) {
-          $interval.cancel(authCheckTimer);
+          $interval.cancel(_authCheckTimer);
           deferred.resolve(getToken());
+        } else {
+          $log.info("Not authenticated yet :(")
         }
-      }, 2000)
+      }, 500)
     }
 
     function _openPopup(url) {

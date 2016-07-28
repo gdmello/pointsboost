@@ -8,7 +8,7 @@
   /** @ngInject */
   function pointsBoostAPI($log, $http, $cookies) {
     
-    var USER_ID_COOKIE = 'POINTSBOOST_USER_ID';
+    var USER_COOKIE = 'POINTSBOOST_USER';
 
     var apiHost = 'http://127.0.0.1:5000';
     var currentUser = null;
@@ -28,7 +28,7 @@
 
     function getCurrentUser() {
       if (!currentUser) {
-        currentUser = $cookies.getObject(USER_ID_COOKIE)
+        currentUser = $cookies.getObject(USER_COOKIE)
       }
 
       return currentUser;
@@ -37,7 +37,7 @@
     function setCurrentUser(user) {
       $log.info("Setting current user", user)
       currentUser = user;
-      $cookies.putObject(USER_ID_COOKIE, user);
+      $cookies.putObject(USER_COOKIE, user);
     }
     
 

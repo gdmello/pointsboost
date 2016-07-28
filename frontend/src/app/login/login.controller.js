@@ -6,7 +6,7 @@
     .controller('LoginController', LoginController);
 
   /** @ngInject */
-  function LoginController($timeout, $rootScope, $location, toastr, fitBitAuth, pointsBoostAPI) {
+  function LoginController($timeout, $location, toastr, fitBitAuth, pointsBoostAPI) {
 
     var vm = this;
 
@@ -23,7 +23,7 @@
       
       // We log out the user on this page load.
       pointsBoostAPI.logOut();
-      
+
       $timeout(function() {
         vm.classAnimation = 'rubberBand';
       }, 4000);

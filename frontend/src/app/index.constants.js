@@ -4,7 +4,6 @@
 
   angular
     .module('pointsboost')
-    .constant('malarkey', malarkey)
     .constant('moment', moment);
 
 })();
