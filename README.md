@@ -8,7 +8,7 @@ Setup virtualenv
 ```
     $ sudo easy_install virtualenv
     $ mkvirtualenv pointsboost
-    $ cd frontend
+    $ cd backend
     $ pip install -r requirements.txt
 ```
 
