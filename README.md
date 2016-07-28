@@ -1,7 +1,7 @@
 # Points Boost
 
 ## Backend
-----------
+
 ### Setup
 
 Setup virtualenv
