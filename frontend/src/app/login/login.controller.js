@@ -20,13 +20,16 @@
 
 
     function activate() {
+      
+      // We log out the user on this page load.
+      pointsBoostAPI.logOut();
+      
       $timeout(function() {
         vm.classAnimation = 'rubberBand';
       }, 4000);
     }
 
     this.logIn = function() {
-      pointsBoostAPI.logOut();
       fitBitAuth.authorize().then(function (token) {
         showLoggedInMsg();
         pointsBoostAPI.user(token).then(function () {

@@ -11,7 +11,7 @@
       restrict: 'E',
       templateUrl: 'app/components/navbar/navbar.html',
       scope: {
-        creationDate: '='
+        creationDate: '=',
       },
       controller: NavbarController,
       controllerAs: 'vm',
@@ -21,9 +21,14 @@
     return directive;
 
     /** @ngInject */
-    function NavbarController(moment) {
+    function NavbarController(moment, pointsBoostAPI) {
       var vm = this;
 
+      if (pointsBoostAPI.getCurrentUser()) {
+        vm.loginButtonText = "Logout"
+      } else {
+        vm.loginButtonText = "Login"
+      }
       // "vm.creationDate" is available by directive option "bindToController: true"
       vm.relativeDate = moment(vm.creationDate)
         .fromNow();
