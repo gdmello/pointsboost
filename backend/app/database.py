@@ -92,3 +92,12 @@ def user_challenges(user_id, status='new'):
             rewardPoints=row[5]
         ))
     return challenges
+
+
+def user_challenge(user_id, challenge_id, user_fitbit_total_steps):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' INSERT INTO user_challenge
+                        (user_identifier, challenge_identifier, user_total_step_count_on_start, status)
+                          VALUES (?,?,?,?);''', (user_id, challenge_id, user_fitbit_total_steps, 'in-progress'))
+    connection.commit()

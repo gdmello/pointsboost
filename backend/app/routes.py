@@ -52,7 +52,7 @@ def challenge_status(user_id, status):
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
-@app.route('/challenges/<challenge_id>/user/<user_id>', methods=['POST'])
+@app.route('/users/<user_id>/challenges/<challenge_id>', methods=['POST'])
 def user_challenge(challenge_id, user_id):
     """
         POST /challenges/<challenge_id>/user/<user_id>
@@ -60,6 +60,10 @@ def user_challenge(challenge_id, user_id):
     :param user_id:
     :return:
     """
+    # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
+
+    database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=1)
+
     user = {
         'challengeId': challenge_id,
         'userId': user_id
