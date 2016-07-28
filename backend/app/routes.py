@@ -1,7 +1,7 @@
 import httplib
 import json
 
-from flask import Flask, render_template, request, Response
+from flask import Flask, request, Response
 
 app = Flask(__name__)
 
@@ -16,6 +16,11 @@ def fitbit_user():
         'fitbitToken': fitbit_token,
         'userId': 123
     }
+
+    # Get users fitbit email and points balance.
+
+    # Save the user model in the database
+
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
