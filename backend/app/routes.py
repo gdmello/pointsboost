@@ -25,7 +25,7 @@ def fitbit_user():
     fitbit_token = request.args.get('fitbit_token', '')
     logger.debug('Creating user with token %s', fitbit_token)
 
-    # Get users fitbit email and current step count.
+    # TODO: Prerna: Get users fitbit email and current step count and set values in database.create_user
 
     # Save the user model in the database
     user_id = database.create_user(name='Ezra Lampstand', email='ezra.l@gmail.com', loyalty_program_user_id='GlobalRewards123',
