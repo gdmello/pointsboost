@@ -18,5 +18,14 @@ def fitbit_user():
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
+@app.route('/user', methods=['POST'])
+def fitbit_user():
+    fitbit_token = request.args.get('fitbit_token', '')
+    user = {
+        'fitbitToken': fitbit_token,
+        'identifier': 123
+    }
+    return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+
 if __name__ == '__main__':
     app.run(debug=True)
