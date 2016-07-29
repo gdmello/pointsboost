@@ -25,34 +25,40 @@ def fitbit_user():
     """
     access_token = request.args.get('access_token', '')
     logger.debug('Creating user with token %s', access_token)
-    fitbit_id = request.args.get('user_id', '')
-    fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
-    name = fitbit_api.user_profile_get(fitbit_id)['user']['fullName']
     #get lifetimfe stats https://api.fitbit.com/1/user/4KRQ6L/activities.json
     # Get users fitbit email and points balance.
 
     # eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
 
-    # Save the user model in the database
+    
+    fitbit_id = request.args.get('user_id', '')
     user = database.get_user_by_fitbit(fitbit_id)
 
     if user is None:
         if len(access_token) > 0:
+            fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
+            name = fitbit_api.user_profile_get(fitbit_id)['user']['fullName']
             database.create_user(name=name, email='ezra.l@gmail.com', loyalty_program_user_id='GlobalRewards123',
                                         access_token=access_token, refresh_token='some refresh token',
                                         token_expiry='2016-10-01 12:12:12.777', fitbit_id=fitbit_id)
         else:
             raise StandardError("no user found, or access token sent")
         user = database.get_user_by_fitbit(fitbit_id)
+
+
     if len(access_token) > 0:
         database.update_user_token(user.get('userIdentifier'), access_token)
-        
+
+    
+    
     #points_balance = lcp_query.get_balance(user_id)
     points_balance = 549
     user = {
         'access_token': access_token,
         'userId': user.get('userIdentifier'),
-        'points_balance': points_balance
+        'points_balance': points_balance,
+        'name': user.get('name'),
+        'fitbitId':user.get('fitbit_id')
     }
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 

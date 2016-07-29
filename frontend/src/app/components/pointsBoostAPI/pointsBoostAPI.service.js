@@ -28,7 +28,8 @@
       acceptedChallenges: acceptedChallenges,
       enrollInAChallenge: enrollInAChallenge,
       rejectAChallenge: rejectAChallenge,
-      userActivity: userActivity
+      userActivity: userActivity,
+      refreshUser: refreshUser
     };
 
     return service;
@@ -51,6 +52,10 @@
     function logOut() {
       $log.info("Logging out.")
       setCurrentUser(null)
+    }
+
+    function refreshUser() {
+      return user('', getCurrentUser().fitbitId)
     }
 
     function user(fitbit_token, user_id) {
