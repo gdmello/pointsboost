@@ -51,6 +51,8 @@ def seed_challenges():
         ('5', 'Get 500 GR Points For 50 steps', 50, 'merchant_GR_123', expire_in(100), 500),
     ]
 
+    cursor.executemany('''UPDATE challenges SET expiry_timestamp=? WHERE identifier=?''', ((c[4], c[0]) for c in challenges))
+
     cursor.executemany('''INSERT OR IGNORE INTO challenges(identifier, name, steps_to_unlock, loyalty_program_merchant_user_id,
                         expiry_timestamp, reward_points)
                           VALUES (?,?,?,?,?,?)
