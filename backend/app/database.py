@@ -2,6 +2,7 @@ import sqlite3
 import uuid
 import logging
 import sys
+import datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -36,12 +37,18 @@ def seed_challenges():
     logger.debug('seeding challenges ...')
     connection = _connection()
     cursor = connection.cursor()
+
+    def expire_in(minutes):
+        now = datetime.datetime.now() + datetime.timedelta(0, 60*minutes)
+        timstr = now.strftime("%Y-%m-%d %H:%M:%S")
+        return timstr
+
     challenges = [
-        ('1', 'Get 100 GR Points For 10 steps', 10, 'merchant_GR_123', '2016-07-29 12:53:12', 100),
-        ('2', 'Get 200 GR Points For 20 steps', 20, 'merchant_GR_123', '2016-07-29 13:00:12', 200),
-        ('3', 'Get 300 GR Points For 30 steps', 30, 'merchant_GR_123', '2016-07-29 13:10:12', 300),
-        ('4', 'Get 400 GR Points For 40 steps', 40, 'merchant_GR_123', '2016-07-29 13:12:12', 400),
-        ('5', 'Get 500 GR Points For 50 steps', 50, 'merchant_GR_123', '2016-07-29 13:12:12', 500),
+        ('1', 'Get 100 GR Points For 10 steps', 10, 'merchant_GR_123', expire_in(10), 100),
+        ('2', 'Get 200 GR Points For 20 steps', 20, 'merchant_GR_123', expire_in(7), 200),
+        ('3', 'Get 300 GR Points For 30 steps', 30, 'merchant_GR_123', expire_in(15), 300),
+        ('4', 'Get 400 GR Points For 40 steps', 40, 'merchant_GR_123', expire_in(2), 400),
+        ('5', 'Get 500 GR Points For 50 steps', 50, 'merchant_GR_123', expire_in(100), 500),
     ]
 
     cursor.executemany('''INSERT OR IGNORE INTO challenges(identifier, name, steps_to_unlock, loyalty_program_merchant_user_id,
