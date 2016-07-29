@@ -1,45 +1,43 @@
 import httplib
 import json
-import logging
-import sys
 
-from flask import Flask, request, Response
-from flask_cors import CORS
-
-import database
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-handler = logging.StreamHandler(sys.stdout)
-logger.addHandler(handler)
+from flask import Flask, render_template, request, Response
 
 app = Flask(__name__)
-CORS(app)
 
 
-@app.route('/user', methods=['POST'])
+@app.route('/user', methods=['POST', 'GET'])
 def fitbit_user():
     """
-        POST /user?fitbit_token=<aaa>
+        POST /user?access_token=<aaa>
+
     """
-    fitbit_token = request.args.get('fitbit_token', '')
-    logger.debug('Creating user with token %s', fitbit_token)
-
-    # TODO: Prerna: Get users fitbit email and current step count and set values in database.create_user
-
-    # Save the user model in the database
-    user_id = database.create_user(name='Ezra Lampstand', email='ezra.l@gmail.com', loyalty_program_user_id='GlobalRewards123',
-                         access_token='some_access_token', refresh_token='some refresh token',
-                         token_expiry='2016-10-01 12:12:12.777', fitbit_id='fitbit_123')
+    access_token = request.args.get('access_token', '')
+    user_id = request.args.get('user_id', '')
+    lifetimeSteps = get_steps(user_id, access_token)
 
     user = {
-        'fitbitToken': fitbit_token,
-        'userId': user_id
+        'access_token': access_token,
+        'userId': user_id,
+        'lifetimeSteps': lifetimeSteps
     }
+
+    # Get users fitbit email and points balance.
+
+    #eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
+
+    # Save the user model in the database
+
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
+def get_steps(user_id, access_token):
+    """
+        GET https://api.fitbit.com/1/user/user_id/activities.json
+    """
+    steps = request.args.get('tracker/steps', '')
+    return steps
 
-@app.route('/users/<user_id>/challenges/_<status>', methods=['GET'])
+@app.route('/user/<user_id>/challenges/_<status>', methods=['GET'])
 def challenge_status(user_id, status):
     """
     GET /user/<user_id>/challenges/_new
@@ -48,11 +46,16 @@ def challenge_status(user_id, status):
     :param status:
     :return:
     """
-    challenges = database.user_challenges(user_id, status)
+    challenges = [{
+        'challengeName': 'some name',
+        'challengeId': 123,
+        'userId': user_id,
+        'status': status
+    }]
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
-@app.route('/users/<user_id>/challenges/<challenge_id>', methods=['POST'])
+@app.route('/challenges/<challenge_id>/user/<user_id>', methods=['POST'])
 def user_challenge(challenge_id, user_id):
     """
         POST /challenges/<challenge_id>/user/<user_id>
@@ -60,10 +63,6 @@ def user_challenge(challenge_id, user_id):
     :param user_id:
     :return:
     """
-    # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
-
-    database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=1)
-
     user = {
         'challengeId': challenge_id,
         'userId': user_id
@@ -89,7 +88,4 @@ def expire_user_challenges():
 
 
 if __name__ == '__main__':
-    logger.debug('Initializing database ...')
-    database.initialize()
-    database.seed_challenges()
     app.run(debug=True)
