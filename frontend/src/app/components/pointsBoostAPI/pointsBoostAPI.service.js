@@ -52,9 +52,9 @@
       setCurrentUser(null)
     }
 
-    function user(fitbit_token) {
+    function user(fitbit_token, user_id) {
 
-      return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token)
+     return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token + "&user_id=" + user_id)
       .then(userComplete)
       .catch(userFailed);
 
