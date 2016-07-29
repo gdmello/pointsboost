@@ -21,17 +21,34 @@
     return directive;
 
     /** @ngInject */
-    function NavbarController(moment, pointsBoostAPI) {
+    function NavbarController(moment, $mdSidenav, pointsBoostAPI) {
       var vm = this;
+      
+      vm.user = pointsBoostAPI.getCurrentUser();
+      if (vm.user) {
+        
+        vm.userName = vm.user.name;
+        vm.userSummary = "You have collected " + vm.user.points_balance + " points so far!";
 
-      if (pointsBoostAPI.getCurrentUser()) {
         vm.loginButtonText = "Logout"
       } else {
         vm.loginButtonText = "Login"
       }
-      // "vm.creationDate" is available by directive option "bindToController: true"
-      vm.relativeDate = moment(vm.creationDate)
-        .fromNow();
+      
+      vm.openSideNav = function() {
+       $mdSidenav('left').open()
+        .then(function () {
+          $log.debug("close LEFT is done");
+        }); 
+      }
+
+      vm.closeSideNav = function() {
+       $mdSidenav('left').close()
+        .then(function () {
+          $log.debug("close LEFT is done");
+        }); 
+      }
+      
     }
   }
 

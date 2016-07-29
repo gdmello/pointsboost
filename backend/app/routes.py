@@ -15,11 +15,13 @@ def fitbit_user():
     access_token = request.args.get('access_token', '')
     user_id = request.args.get('user_id', '')
     lifetimeSteps = get_steps(user_id, access_token)
+    name = request.args.get('displayName', '')
 
     user = {
         'access_token': access_token,
         'userId': user_id,
-        'lifetimeSteps': lifetimeSteps
+        'name': name
+        'points_balance': lifetimeSteps
     }
 
     # Get users fitbit email and points balance.
@@ -27,7 +29,6 @@ def fitbit_user():
     #eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
 
     # Save the user model in the database
-
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 def get_steps(user_id, access_token):

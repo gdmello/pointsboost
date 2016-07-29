@@ -1,18 +1,20 @@
-<div layout="vertical" layout-fill>
-
-  <md-content>
+<div layout="row" layout-fill>
+  <md-content flex>
     <header>
       <acme-navbar creation-date="main.creationDate"></acme-navbar>
     </header>
 
     <section class="jumbotron">
       <h1>Welcome {{ main.currentUser.name }}!</h1>
-      <p class="lead">
-        <img src="assets/images/yeoman.png" alt="I'm Yeoman"><br>
-        Always a pleasure scaffolding your apps.
-      </p>
-      <md-button class="md-raised animated infinite" ng-class="main.classAnimation" ng-click="main.showToastr()">Splendid Toastr</md-button>
     </section>
+
+    <section class="challenges challenges-active">
+    </section>
+    <md-divider></md-divider>
+    <section class="challenges challenges-expired">
+    </section>
+
+
   </md-content>
 
 </div>

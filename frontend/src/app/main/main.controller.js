@@ -11,6 +11,7 @@
 
     vm.classAnimation = '';
     vm.creationDate = 1469725303069;
+    vm.currentUser = pointsBoostAPI.getCurrentUser();
 
     activate();
 
