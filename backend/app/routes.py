@@ -2,8 +2,9 @@ import httplib
 import json
 import logging
 import sys
-from flask import Flask, render_template, request, Response
+from flask import Flask, request, Response
 from flask_cors import CORS
+import fitbit
 
 import database
 
@@ -25,7 +26,6 @@ def fitbit_user():
     access_token = request.args.get('access_token', '')
     logger.debug('Creating user with token %s', access_token)
     fitbit_id = request.args.get('user_id', '')
-
 
     #get profile --> name GET https://api.fitbit.com/1/user/4KRQ6L/profile.json
     fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
