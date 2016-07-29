@@ -37,16 +37,10 @@
       
       vm.openSideNav = function() {
        $mdSidenav('left').open()
-        .then(function () {
-          $log.debug("close LEFT is done");
-        }); 
       }
 
       vm.closeSideNav = function() {
        $mdSidenav('left').close()
-        .then(function () {
-          $log.debug("close LEFT is done");
-        }); 
       }
       
     }

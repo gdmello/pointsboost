@@ -7,15 +7,15 @@
 
   /** @ngInject */
   function fitBitAuth($log, $http, $window, $httpParamSerializer, $cookies, $interval, $location, $q, locationHash) {
-    var FITBIT_ACCESS_TOKEN_COOKIE = 'FITBIT_ACCESS_TOKEN_COOKIE'
+    var FITBIT_ACCESS_TOKEN_COOKIE = 'FITBIT_ACCESS_TOKEN_COOKIE_V2'
     var clientId = '227QRF'
     var clientSecret = 'aacdb90aaaa175c50e0556e1a50f35ab'
     var authScopes = ["activity", "nutrition", "heartrate", "location", "nutrition", "profile", "settings", "sleep", "social", "weight"]
-    
-    if ($location.host().indexOf('local') != 0 || $location.host().indexOf('127.') != 0) {
-      var redirectUri = 'http://localhost:3000/';  
+    var redirectUri = ""
+    if ($location.host().indexOf('local') < 0 && $location.host().indexOf('127.') < 0) {
+      redirectUri = window.location.protocol + "//" + window.location.host + "/dist";
     } else {
-      var redirectUri = window.location.protocol + "//" + window.location.host + "/dist";
+      redirectUri = 'http://localhost:3000/';
     }
     
     var authorizeUri = 'https://www.fitbit.com/oauth2/authorize'
@@ -56,9 +56,10 @@
 
     function authenticate() {
       if (locationHash != undefined && locationHash.indexOf("access_token") !== -1) {
-        var parsed = locationHash.match(/^#.*access_token=([A-z0-9_\-.]+).*$/)
-        if (parsed.length > 0) {
-          var token = parsed[1];
+        var tokenParsed = locationHash.match(/^#.*access_token=([A-z0-9_\-.]+).*$/)
+        var userIdParsed = locationHash.match(/^#.*user_id=([A-z0-9_\-.]+).*$/)
+        if (tokenParsed.length > 0 && userIdParsed.length > 0) {
+          var token = tokenParsed[1] + "|" + userIdParsed[1];
           setToken(token)
 
           return true;
@@ -80,6 +81,7 @@
         'expires_in': '31536000',
         'state': 'login/'
       }
+      $log.info("REDIRECT URI : " + redirectUri);
       var qs = $httpParamSerializer(authorizeOpts);
       var fullUrl = authorizeUri + "?" + qs;
       console.log("Opening auth: " + fullUrl)

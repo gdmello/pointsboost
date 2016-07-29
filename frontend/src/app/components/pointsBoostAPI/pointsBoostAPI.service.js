@@ -9,11 +9,11 @@
   function pointsBoostAPI($log, $http, $location, $cookies) {
 
     var USER_COOKIE = 'POINTSBOOST_USER';
-
-    if ($location.host().indexOf('local') != 0 || $location.host().indexOf('127.') != 0) {
-      var apiHost = 'http://127.0.0.1:5000';  
+    var apiHost = '';  
+    if ($location.host().indexOf('local') < 0 && $location.host().indexOf('127.') < 0) {
+      apiHost = '';
     } else {
-      var apiHost = '/';
+      apiHost = 'http://127.0.0.1:5000'
     }
     
     var currentUser = null;
@@ -52,9 +52,9 @@
       setCurrentUser(null)
     }
 
-    function user(fitbit_token) {
+    function user(fitbit_token, user_id) {
 
-      return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token)
+     return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token + "&user_id=" + user_id)
       .then(userComplete)
       .catch(userFailed);
 

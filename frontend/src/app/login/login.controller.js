@@ -30,9 +30,10 @@
     }
 
     this.logIn = function() {
-      fitBitAuth.authorize().then(function (token) {
+      fitBitAuth.authorize().then(function (token_user) {
         showLoggedInMsg();
-        pointsBoostAPI.user(token).then(function () {
+        token_user = token_user.split("|");
+        pointsBoostAPI.user(token_user[0], token_user[1]).then(function () {
           $location.path("/");
         })
       })
