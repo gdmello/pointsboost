@@ -4,7 +4,7 @@ import logging
 import sys
 from flask import Flask, render_template, request, Response
 from flask_cors import CORS
-import fitbit
+
 import database
 
 logger = logging.getLogger(__name__)
@@ -15,24 +15,25 @@ logger.addHandler(handler)
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/user', methods=['POST', 'GET'])
 def fitbit_user():
     """
-        POST /user?fitbit_token=<aaa>&user_id=<bbb>
+        POST /user?access_token=<aaa>
 
     """
-    access_token = request.args.get('fitbit_token', '')
+    access_token = request.args.get('access_token', '')
     logger.debug('Creating user with token %s', access_token)
     fitbit_id = request.args.get('user_id', '')
+
 
     #get profile --> name GET https://api.fitbit.com/1/user/4KRQ6L/profile.json
     fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
     name = fitbit_api.user_profile_get(fitbit_id)['user']['fullName']
     #get lifetimfe stats https://api.fitbit.com/1/user/4KRQ6L/activities.json
-
     # Get users fitbit email and points balance.
 
-    #eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
+    # eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
 
     # Save the user model in the database
     user = database.create_user(name=name, email='ezra.l@gmail.com', loyalty_program_user_id='GlobalRewards123',
@@ -44,6 +45,15 @@ def fitbit_user():
         'userId': user
     }
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+
+
+def get_steps(user_id, access_token):
+    """
+        GET https://api.fitbit.com/1/user/user_id/activities.json
+    """
+    steps = request.args.get('tracker/steps', '')
+    return steps
+
 
 @app.route('/user/<user_id>/activity', methods=['GET'])
 def user_activity(user_id):
@@ -60,6 +70,7 @@ def user_activity(user_id):
         'steps': activity_stats['lifetime']['tracker']['steps']
     }
     return Response(json.dumps(resp), status=httplib.OK, mimetype='application/json')
+
 
 @app.route('/user/<user_id>/challenges/_<status>', methods=['GET'])
 def challenge_status(user_id, status):
@@ -111,7 +122,6 @@ def expire_user_challenges():
         'userId': 333
     }]
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
-
 
 
 if __name__ == '__main__':

@@ -61,9 +61,18 @@ def create_user(name, email, loyalty_program_user_id, access_token, refresh_toke
                       fitbit_id)
                       VALUES (?,?,?,?,?,?,?,?);''', (user_id, email, name,
                                                      loyalty_program_user_id, access_token,
-                                                     refresh_token, token_expiry, fitbit_id))
+                                                     refresh_token, token_expiry, str(fitbit_id)))
     connection.commit()
     return user_id
+
+
+def get_user(user_id):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' SELECT * FROM users
+                      WHERE identifier = ?
+                  ''', (user_id,))
+    return cursor.fetchone()
 
 
 def user_challenges(user_id, status='new'):
