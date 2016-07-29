@@ -2,8 +2,8 @@
   'use strict';
 
   angular
-    .module('pointsboost')
-    .controller('ChallengeController', ChallengeController);
+  .module('pointsboost')
+  .controller('ChallengeController', ChallengeController);
 
   /** @ngInject */
   function ChallengeController($timeout, $q, toastr, pointsBoostAPI, moment, fitBitAuth, challengeType) {
@@ -41,5 +41,16 @@
       return vm.challenges.length > 0;
     }
 
+    vm.acceptChallenge = function(cid) {
+      pointsBoostAPI.enrollInAChallenge(cid).then(function() {
+        toastr.success('<md-icon class="material-icons">done_all</md-icon><p>Congrats! You have accepted this challenge.</p>', 'Challenge accepted!', {timeOut: 5000})
+      })
+    }
+
+    vm.rejectChallenge = function(cid) {
+      pointsBoostAPI.enrollInAChallenge(cid).then(function() {
+        toastr.success('<md-icon class="material-icons">done_all</md-icon><p>Fail! You have rejected this challenge.</p>', 'Challenge refused!', {timeOut: 5000})
+      })
+    }
   }
 })();

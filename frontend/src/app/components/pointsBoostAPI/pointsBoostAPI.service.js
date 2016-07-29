@@ -27,6 +27,7 @@
       newChallenges: newChallenges,
       acceptedChallenges: acceptedChallenges,
       enrollInAChallenge: enrollInAChallenge,
+      rejectAChallenge: rejectAChallenge,
       userActivity: userActivity
     };
 
@@ -54,7 +55,7 @@
 
     function user(fitbit_token, user_id) {
 
-     return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token + "&user_id=" + user_id)
+     return $http.post(apiHost + '/user?access_token=' + fitbit_token + "&user_id=" + user_id)
       .then(userComplete)
       .catch(userFailed);
 
@@ -115,7 +116,7 @@
       }
     }
 
-    function enrollInAChallenge(user_id, challenge_id) {
+    function enrollInAChallenge(challenge_id, user_id) {
       if (!user_id) {
         user_id = getCurrentUser().userId;
       }
@@ -129,6 +130,24 @@
       }
 
       function challengeEnrollmentFailed(error) {
+        $log.error('XHR Failed for user.\n' + angular.toJson(error.data, true));
+      }
+    }
+
+    function rejectAChallenge(challenge_id, user_id) {
+      if (!user_id) {
+        user_id = getCurrentUser().userId;
+      }
+
+      return $http.post(apiHost + '/challenges/' + challenge_id + '/user/' + user_id + "?action=reject")
+      .then(rejectAChallenge())
+      .catch(challengeRejectionFailed);
+
+      function rejectedChallenge(response) {
+        $log.info(angular.toJson(response.data));
+      }
+
+      function challengeRejectionFailed(error) {
         $log.error('XHR Failed for user.\n' + angular.toJson(error.data, true));
       }
     }
