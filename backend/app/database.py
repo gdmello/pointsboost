@@ -66,12 +66,12 @@ def create_user(name, email, loyalty_program_user_id, access_token, refresh_toke
     return user_id
 
 
-def get_user(fitbit_id):
+def get_user(user_id):
     connection = _connection()
     cursor = connection.cursor()
     cursor.execute(''' SELECT * FROM users
-                      WHERE fitbit_id = ?
-                  ''', (fitbit_id,))
+                      WHERE identifier = ?
+                  ''', (user_id,))
     return cursor.fetchone()
 
 
