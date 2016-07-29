@@ -87,7 +87,6 @@ def user_challenge(challenge_id, user_id):
     :return:
     """
     # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
-    lifetimeSteps = get_steps(user_id, access_token)
     database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=1)
 
     user = {
