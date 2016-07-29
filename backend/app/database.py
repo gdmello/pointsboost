@@ -77,7 +77,8 @@ def get_user(user_id):
     return dict(
         userIdentifier=row[0],
         name=row[2],
-        fitbit_access_token=row[4]
+        fitbit_access_token=row[4],
+        fitbit_id=row[7]
     )
 
 
