@@ -135,6 +135,12 @@ def user_challenges(user_id, status='new'):
     return challenges
 
 
+def destroy_user_challenge(challenge_id, user_id):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute('''DELETE FROM user_challenge WHERE challenge_identifier=? AND user_identifier=?''', (challenge_id, user_id))
+    connection.commit()
+
 def user_challenge(user_id, challenge_id, user_fitbit_total_steps):
     connection = _connection()
     cursor = connection.cursor()

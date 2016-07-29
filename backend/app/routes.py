@@ -106,23 +106,27 @@ def challenge_status(user_id, status):
 @app.route('/users/<user_id>/challenges/<challenge_id>', methods=['POST'])
 def user_challenge(challenge_id, user_id):
     """
-        POST /challenges/<challenge_id>/user/<user_id>
     :param challenge_id:
     :param user_id:
     :return:
     """
     # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
     user = database.get_user(user_id)
-    access_token = user.get('fitbit_access_token')
-    fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
-    activity_stats = fitbit_api.activity_stats(user_id=user.get('fitbit_id'))
-    steps = activity_stats['lifetime']['tracker']['steps']
-    database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=steps)
+    action = fitbit_id = request.args.get('action', '')
+    if action == 'reject':
+        challenge = database.destroy_user_challenge(challenge_id, user_id)
+        user = {}
+    else:
+        access_token = user.get('fitbit_access_token')
+        fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
+        activity_stats = fitbit_api.activity_stats(user_id=user.get('fitbit_id'))
+        steps = activity_stats['lifetime']['tracker']['steps']
+        database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=steps)
 
-    user = {
-        'challengeId': challenge_id,
-        'userId': user_id
-    }
+        user = {
+            'challengeId': challenge_id,
+            'userId': user_id
+        }
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 

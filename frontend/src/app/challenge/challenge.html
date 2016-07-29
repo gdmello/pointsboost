@@ -29,8 +29,8 @@
           </md-card-title-text>
         </md-card-title>
         <md-card-actions layout="row" layout-align="start center">
-          <md-button ng-click="challenge.acceptChallenge(c.challengeIdentifier)">Accept</md-button>
-          <md-button ng-click="challenge.rejectChallenge(c.challengeIdentifier)" class='md-hue-2'>Reject</md-button>
+          <md-button ng-click="challenge.acceptChallenge(c.challengeIdentifier)" ng-hide="challenge.isAccepted">I'm up for it!</md-button>
+          <md-button ng-click="challenge.rejectChallenge(c.challengeIdentifier)" ng-show="challenge.isAccepted" class='md-hue-2'>Give Up</md-button>
         </md-card-actions>
       </md-card>
     </section>
