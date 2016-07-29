@@ -96,7 +96,7 @@ def user_challenge(challenge_id, user_id):
     :return:
     """
     # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
-    access_token = database.get_user(user_id).access_token
+    access_token = database.get_user(user_id).get('fitbit_access_token')
     fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
     activity_stats = fitbit_api.activity_stats(user_id=user_id)
     steps = activity_stats['lifetime']['tracker']['steps']
@@ -119,6 +119,12 @@ def expire_user_challenges():
     :param user_id:
     :return:
     """
+    import ipdb
+    ipdb.set_trace()
+    expired_user_challenges = database.get_expired_challenges()
+    for challenge in expired_user_challenges:
+        print "hi"
+
     user = [{
         'challengeId': 777,
         'userId': 333
