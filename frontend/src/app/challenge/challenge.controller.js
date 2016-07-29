@@ -6,18 +6,19 @@
     .controller('ChallengeController', ChallengeController);
 
   /** @ngInject */
-  function ChallengeController($timeout, $q, toastr, pointsBoostAPI, moment, fitBitAuth, challengeFn) {
+  function ChallengeController($timeout, $q, toastr, pointsBoostAPI, moment, fitBitAuth, challengeType) {
     var vm = this;
 
     vm.currentUser = pointsBoostAPI.getCurrentUser();
     vm.viewLoading = true;
     vm.challenges = []
     vm.userActivity = {}
+    vm.challengeType = challengeType.name
     activate();
 
 
     function activate() {
-      var challenges = challengeFn().then(function(response) {
+      var challenges = challengeType.fn().then(function(response) {
         vm.challenges = response;
         var start = moment();
         vm.challenges.forEach(function (challenge) {

@@ -29,8 +29,8 @@
         controllerAs: 'challenge',
         resolve: {
           factory: checkRouting,
-          challengeFn: function(pointsBoostAPI) {
-            return pointsBoostAPI.acceptedChallenges;
+          challengeType: function(pointsBoostAPI) {
+            return { name: 'Accepted', fn: pointsBoostAPI.acceptedChallenges };
           }
         }
       })
@@ -40,8 +40,8 @@
         controllerAs: 'challenge',
         resolve: {
           factory: checkRouting,
-          challengeFn: function(pointsBoostAPI) {
-            return pointsBoostAPI.newChallenges;
+          challengeType: function(pointsBoostAPI) {
+            return { name: 'New', fn: pointsBoostAPI.newChallenges };
           }
         }
       })

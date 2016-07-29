@@ -7,7 +7,7 @@
     <md-progress-circular ng-show="challenge.viewLoading" md-diameter="96"></md-progress-circular>
 
     <section class="jumbotron" ng-hide="challenge.viewLoading">
-      <h1>Challenges.</h1>
+      <h1>{{ challenge.challengeType }} Challenges.</h1>
       <h3 ng-show="challenge.hasChallenges()"> You have {{ challenge.challenges.length }} challenges!</h3>
       <h3 ng-hide="challenge.hasChallenges()"> Nothing to see here. Go for a jog and come back!</h3> 
     </section>
