@@ -63,9 +63,10 @@ def user_activity(user_id):
     :param status:
     :return:
     """
-    access_token = database.get_user(user_id).access_token
+    user = database.get_user(user_id)
+    access_token = user.get('fitbit_access_token')
     fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
-    activity_stats = fitbit_api.activity_stats(user_id=user_id)
+    activity_stats = fitbit_api.activity_stats(user_id=user.get('fitbit_id'))
     resp = {
         'steps': activity_stats['lifetime']['tracker']['steps']
     }
