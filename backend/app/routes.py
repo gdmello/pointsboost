@@ -1,10 +1,19 @@
 import httplib
 import json
-
+import logging
+import sys
 from flask import Flask, render_template, request, Response
+from flask_cors import CORS
+
+import database
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(handler)
 
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/user', methods=['POST', 'GET'])
 def fitbit_user():
@@ -15,7 +24,6 @@ def fitbit_user():
     access_token = request.args.get('access_token', '')
     logger.debug('Creating user with token %s', access_token)
     fitbit_id = request.args.get('user_id', '')
-    lifetimeSteps = get_steps(user_id, access_token)
     name = request.args.get('displayName', '')
     # Get users fitbit email and points balance.
 
@@ -48,12 +56,7 @@ def challenge_status(user_id, status):
     :param status:
     :return:
     """
-    challenges = [{
-        'challengeName': 'some name',
-        'challengeId': 123,
-        'userId': user_id,
-        'status': status
-    }]
+        challenges = database.user_challenges(user_id, status)
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
@@ -65,6 +68,10 @@ def user_challenge(challenge_id, user_id):
     :param user_id:
     :return:
     """
+    # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
+    lifetimeSteps = get_steps(user_id, access_token)
+    database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=lifetimeSteps)
+
     user = {
         'challengeId': challenge_id,
         'userId': user_id
@@ -90,4 +97,7 @@ def expire_user_challenges():
 
 
 if __name__ == '__main__':
+    logger.debug('Initializing database ...')
+    database.initialize()
+    database.seed_challenges()
     app.run(debug=True)
