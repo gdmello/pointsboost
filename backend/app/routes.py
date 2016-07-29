@@ -2,8 +2,9 @@ import httplib
 import json
 import logging
 import sys
-from flask import Flask, render_template, request, Response
+from flask import Flask, request, Response
 from flask_cors import CORS
+import fitbit
 
 import database
 
@@ -19,15 +20,12 @@ CORS(app)
 @app.route('/user', methods=['POST', 'GET'])
 def fitbit_user():
     """
-        POST /user?access_token=<aaa>
+        POST /user?access_token=<aaa>&user_id=<fitbit_user_id>
 
     """
     access_token = request.args.get('access_token', '')
     logger.debug('Creating user with token %s', access_token)
     fitbit_id = request.args.get('user_id', '')
-
-
-    #get profile --> name GET https://api.fitbit.com/1/user/4KRQ6L/profile.json
     fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
     name = fitbit_api.user_profile_get(fitbit_id)['user']['fullName']
     #get lifetimfe stats https://api.fitbit.com/1/user/4KRQ6L/activities.json
@@ -96,9 +94,10 @@ def user_challenge(challenge_id, user_id):
     :return:
     """
     # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
-    access_token = database.get_user(user_id).access_token
+    user = database.get_user(user_id)
+    access_token = user.get('fitbit_access_token')
     fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
-    activity_stats = fitbit_api.activity_stats(user_id=user_id)
+    activity_stats = fitbit_api.activity_stats(user_id=user.get('fitbit_id'))
     steps = activity_stats['lifetime']['tracker']['steps']
     database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=steps)
 
@@ -119,6 +118,12 @@ def expire_user_challenges():
     :param user_id:
     :return:
     """
+    import ipdb
+    ipdb.set_trace()
+    expired_user_challenges = database.get_expired_challenges()
+    for challenge in expired_user_challenges:
+        print "hi"
+
     user = [{
         'challengeId': 777,
         'userId': 333

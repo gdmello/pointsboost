@@ -37,11 +37,11 @@ def seed_challenges():
     connection = _connection()
     cursor = connection.cursor()
     challenges = [
-        ('1', 'Get 100 GR Points For 10 steps', 10, 'merchant_GR_123', '2016-10-01 12:12:12.777', 100),
-        ('2', 'Get 200 GR Points For 20 steps', 20, 'merchant_GR_123', '2016-10-01 12:12:12.777', 200),
-        ('3', 'Get 300 GR Points For 30 steps', 30, 'merchant_GR_123', '2016-10-01 12:12:12.777', 300),
-        ('4', 'Get 400 GR Points For 40 steps', 40, 'merchant_GR_123', '2016-10-01 12:12:12.777', 400),
-        ('5', 'Get 500 GR Points For 50 steps', 50, 'merchant_GR_123', '2016-10-01 12:12:12.777', 500),
+        ('1', 'Get 100 GR Points For 10 steps', 10, 'merchant_GR_123', '2016-07-01 12:12:12', 100),
+        ('2', 'Get 200 GR Points For 20 steps', 20, 'merchant_GR_123', '2016-07-01 12:12:12', 200),
+        ('3', 'Get 300 GR Points For 30 steps', 30, 'merchant_GR_123', '2016-07-01 12:12:12', 300),
+        ('4', 'Get 400 GR Points For 40 steps', 40, 'merchant_GR_123', '2016-07-01 12:12:12', 400),
+        ('5', 'Get 500 GR Points For 50 steps', 50, 'merchant_GR_123', '2016-07-01 12:12:12', 500),
     ]
 
     cursor.executemany('''INSERT OR IGNORE INTO challenges(identifier, name, steps_to_unlock, loyalty_program_merchant_user_id,
@@ -72,7 +72,14 @@ def get_user(user_id):
     cursor.execute(''' SELECT * FROM users
                       WHERE identifier = ?
                   ''', (user_id,))
-    return cursor.fetchone()
+
+    row = cursor.fetchone()
+    return dict(
+        userIdentifier=row[0],
+        name=row[2],
+        fitbit_access_token=row[4],
+        fitbit_id=row[7]
+    )
 
 
 def user_challenges(user_id, status='new'):
@@ -110,3 +117,14 @@ def user_challenge(user_id, challenge_id, user_fitbit_total_steps):
                         (user_identifier, challenge_identifier, user_total_step_count_on_start, status)
                           VALUES (?,?,?,?);''', (user_id, challenge_id, user_fitbit_total_steps, 'in-progress'))
     connection.commit()
+
+
+def get_expired_challenges():
+    cursor = _connection().cursor()
+    # Get all user challenges where the challenge has expired for less than 5 minutes.
+    cursor.execute('''
+                    SELECT * FROM user_challenge WHERE challenge_identifier IN (
+                      SELECT * FROM challenges WHERE (strftime('%s','now') - strftime('%M', expiry_timestamp))  < 5
+                    )
+                  ''')
+    return cursor.fetchall()
