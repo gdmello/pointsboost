@@ -30,7 +30,7 @@ def fitbit_user():
 
     # eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
 
-    
+
     fitbit_id = request.args.get('user_id', '')
     user = database.get_user_by_fitbit(fitbit_id)
 
@@ -40,7 +40,7 @@ def fitbit_user():
             name = fitbit_api.user_profile_get(fitbit_id)['user']['fullName']
             database.create_user(name=name, email='ezra.l@gmail.com', loyalty_program_user_id='GlobalRewards123',
                                         access_token=access_token, refresh_token='some refresh token',
-                                        token_expiry='2016-10-01 12:12:12.777', fitbit_id=fitbit_id)
+                                        token_expiry='2016-10-01 12:12:12.777', fitbit_id=fitbit_id, points=20146)
         else:
             raise StandardError("no user found, or access token sent")
         user = database.get_user_by_fitbit(fitbit_id)
@@ -49,18 +49,17 @@ def fitbit_user():
     if len(access_token) > 0:
         database.update_user_token(user.get('userIdentifier'), access_token)
 
-    
-    
+
     #points_balance = lcp_query.get_balance(user_id)
-    points_balance = 549
-    user = {
+    #points_balance = 549
+    userJSON = {
         'access_token': access_token,
         'userId': user.get('userIdentifier'),
-        'points_balance': points_balance,
+        'points_balance': user.get('points'),
         'name': user.get('name'),
         'fitbitId':user.get('fitbit_id')
     }
-    return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+    return Response(json.dumps(userJSON), status=httplib.CREATED, mimetype='application/json')
 
 
 def get_steps(user_id, access_token):
@@ -82,10 +81,12 @@ def user_activity(user_id):
     user = database.get_user(user_id)
     print(user)
     access_token = user.get('fitbit_access_token')
-    fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
+    totalPoints = user.get('points')
+    fitbit_api = fitbit.Fitbit('4KRQ6L', 'aacdb90aaaa175c50e0556e1a50f35ab',access_token=access_token)
     activity_stats = fitbit_api.activity_stats(user_id=user.get('fitbit_id'))
     resp = {
-        'steps': activity_stats['lifetime']['tracker']['steps']
+        'steps': activity_stats['lifetime']['tracker']['steps'],
+        'points': totalPoints
     }
     return Response(json.dumps(resp), status=httplib.OK, mimetype='application/json')
 
