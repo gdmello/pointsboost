@@ -121,8 +121,20 @@ def expire_user_challenges():
     import ipdb
     ipdb.set_trace()
     expired_user_challenges = database.get_expired_challenges()
-    for challenge in expired_user_challenges:
-        print "hi"
+    for user_challenge in expired_user_challenges:
+        user_id = user_challenge.get('userIdentifier')
+        user = database.get_user(user_id)
+        fitbit_api = fitbit.Fitbit('227QRF', 'aacdb90aaaa175c50e0556e1a50f35ab',
+                                   access_token=user.get('fitbit_access_token'))
+        activity_stats = fitbit_api.activity_stats(user_id=user.get('fitbit_id'))
+        steps = activity_stats['lifetime']['tracker']['steps']
+        challenge_id = user_challenge.get('challengeIdentifier')
+        uc = database.get_user_challenge(user_id, challenge_id)
+        challenge = database.get_challenge(challenge_id)
+        if (steps - uc.get('user_total_step_count_on_start')) >= challenge.get('steps_to_unlock'):
+            database.user_challenge_complete(user_id, challenge_id, challenge.get('reward_points'))
+
+
 
     user = [{
         'challengeId': 777,
