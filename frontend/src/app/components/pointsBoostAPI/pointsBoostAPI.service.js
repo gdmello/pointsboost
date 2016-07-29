@@ -28,7 +28,8 @@
       acceptedChallenges: acceptedChallenges,
       enrollInAChallenge: enrollInAChallenge,
       rejectAChallenge: rejectAChallenge,
-      userActivity: userActivity
+      userActivity: userActivity,
+      refreshUser: refreshUser
     };
 
     return service;
@@ -51,6 +52,10 @@
     function logOut() {
       $log.info("Logging out.")
       setCurrentUser(null)
+    }
+
+    function refreshUser() {
+      return user('', getCurrentUser().fitbitId)
     }
 
     function user(fitbit_token, user_id) {
@@ -121,7 +126,7 @@
         user_id = getCurrentUser().userId;
       }
 
-      return $http.post(apiHost + '/challenges/' + challenge_id + '/user/' + user_id)
+      return $http.post(apiHost + '/users/' + user_id +  '/challenges/' + challenge_id)
       .then(enrolledChallenge)
       .catch(challengeEnrollmentFailed);
 
@@ -139,8 +144,8 @@
         user_id = getCurrentUser().userId;
       }
 
-      return $http.post(apiHost + '/challenges/' + challenge_id + '/user/' + user_id + "?action=reject")
-      .then(rejectAChallenge())
+      return $http.post(apiHost + '/users/' + user_id +  '/challenges/' + challenge_id + "?action=reject")
+      .then(rejectedChallenge)
       .catch(challengeRejectionFailed);
 
       function rejectedChallenge(response) {

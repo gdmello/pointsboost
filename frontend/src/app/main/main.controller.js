@@ -11,7 +11,7 @@
 
     vm.classAnimation = '';
     vm.creationDate = 1469725303069;
-    vm.currentUser = pointsBoostAPI.getCurrentUser();
+    vm.currentUser = {}
     vm.viewLoading = true;
     vm.activeChallenges = []
     vm.userActivity = {}
@@ -27,7 +27,11 @@
         vm.userActivity = response;
       });
 
-      $q.all([promiseActiveChallenges, promiseUserActivity]).then(function() {
+      var refreshUser = pointsBoostAPI.refreshUser().then(function(response) {
+        vm.currentUser = pointsBoostAPI.getCurrentUser();
+      })
+
+      $q.all([promiseActiveChallenges, promiseUserActivity, refreshUser]).then(function() {
         vm.viewLoading = false;
       });
     }

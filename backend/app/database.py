@@ -19,7 +19,7 @@ def initialize():
     cursor.execute(''' CREATE TABLE IF NOT EXISTS users
                         (identifier TEXT PRIMARY KEY ASC, email TEXT, name TEXT, loyalty_program_user_id TEXT,
                         fitbit_access_token TEXT, fitbit_refresh_token TEXT, fitbit_token_expiry TEXT,
-                        fitbit_id TEXT, reward_points INTEGER)''')
+                        fitbit_id TEXT, points INTEGER)''')
     cursor.execute(''' CREATE TABLE IF NOT EXISTS challenges
                         (identifier TEXT PRIMARY KEY, name TEXT, steps_to_unlock INTEGER, loyalty_program_merchant_user_id TEXT,
                         expiry_timestamp TEXT, reward_points INTEGER)''')
@@ -51,20 +51,29 @@ def seed_challenges():
     connection.commit()
 
 
-def create_user(name, email, loyalty_program_user_id, access_token, refresh_token, token_expiry, fitbit_id):
+def create_user(name, email, loyalty_program_user_id, access_token, refresh_token, token_expiry, fitbit_id, points):
     connection = _connection()
     cursor = connection.cursor()
     user_id = str(uuid.uuid1())
     cursor.execute(''' INSERT INTO users
                       (identifier, email, name, loyalty_program_user_id,
                       fitbit_access_token, fitbit_refresh_token, fitbit_token_expiry,
-                      fitbit_id)
-                      VALUES (?,?,?,?,?,?,?,?);''', (user_id, email, name,
+                      fitbit_id, points)
+                      VALUES (?,?,?,?,?,?,?,?,?);''', (user_id, email, name,
                                                      loyalty_program_user_id, access_token,
-                                                     refresh_token, token_expiry, str(fitbit_id)))
+                                                     refresh_token, token_expiry, str(fitbit_id), points))
     connection.commit()
     return user_id
 
+
+def update_user_token(user_id, token):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' UPDATE users
+                       SET fitbit_access_token=?
+                       WHERE identifier=?;''', (token, user_id))
+    connection.commit()
+    return user_id
 
 def get_user(user_id):
     connection = _connection()
@@ -74,6 +83,7 @@ def get_user(user_id):
                   ''', (user_id,))
 
     row = cursor.fetchone()
+    #import ipdb; ipdb.set_trace()
     return dict(
         userIdentifier=row[0],
         name=row[2],
@@ -81,6 +91,23 @@ def get_user(user_id):
         fitbit_id=row[7]
     )
 
+def get_user_by_fitbit(id):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' SELECT * FROM users
+                      WHERE fitbit_id = ?
+                  ''', (id,))
+
+    row = cursor.fetchone()
+    if row is None:
+        return None
+    return dict(
+        userIdentifier=row[0],
+        name=row[2],
+        fitbit_access_token=row[4],
+        fitbit_id=row[7],
+        points=row[8]
+    )
 
 def user_challenges(user_id, status='new'):
     cursor = _connection().cursor()
@@ -109,6 +136,12 @@ def user_challenges(user_id, status='new'):
         ))
     return challenges
 
+
+def destroy_user_challenge(challenge_id, user_id):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute('''DELETE FROM user_challenge WHERE challenge_identifier=? AND user_identifier=?''', (challenge_id, user_id))
+    connection.commit()
 
 def user_challenge(user_id, challenge_id, user_fitbit_total_steps):
     connection = _connection()
