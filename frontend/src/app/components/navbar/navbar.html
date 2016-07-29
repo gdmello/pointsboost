@@ -13,7 +13,7 @@
 	</div>
 </md-toolbar>
 
-<md-sidenav class="md-sidenav-left" md-component-id="left" >
+<md-sidenav class="acme-navbar-sidenav md-sidenav-left" md-component-id="left" >
 	<user-card name="{{ vm.userName }}" description="{{ vm.userSummary }}" ng-if="vm.user"></user-card>
   <md-content layout-padding>
 		<md-list flex>
@@ -23,13 +23,13 @@
 					<h3>My Stats</h3>
 				</div>
 			</md-list-item>
-			<md-list-item class="md-2-line" ng-href="#/" layout="center center">
+			<md-list-item class="md-2-line" ng-href="#/accepted-challenges" layout="center center">
 				<md-icon class="material-icons">directions_run</md-icon>
 				<div class="md-list-item-text" layout="column">
 					<h3>Accepted Challenges</h3>
 				</div>
 			</md-list-item>
-			<md-list-item class="md-2-line" ng-href="#/" layout="center center">
+			<md-list-item class="md-2-line" ng-href="#/new-challenges" layout="center center">
 				<md-icon class="material-icons">local_activity</md-icon>
 				<div class="md-list-item-text" layout="column">
 					<h3>Available Challenges</h3>

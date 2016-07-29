@@ -41,7 +41,23 @@ def fitbit_user():
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
-@app.route('/users/<user_id>/challenges/_<status>', methods=['GET'])
+@app.route('/user/<user_id>/activity', methods=['GET'])
+def user_activity(user_id):
+    """
+    GET /user/<user_id>/activity
+    :param user_id:
+    :param status:
+    :return:
+    """
+    resp = {
+        'steps': 2350,
+        'calories': 259
+    }
+    return Response(json.dumps(resp), status=httplib.OK, mimetype='application/json')
+
+
+
+@app.route('/user/<user_id>/challenges/_<status>', methods=['GET'])
 def challenge_status(user_id, status):
     """
     GET /user/<user_id>/challenges/_new
@@ -54,23 +70,23 @@ def challenge_status(user_id, status):
     return Response(json.dumps(challenges), status=httplib.OK, mimetype='application/json')
 
 
-@app.route('/users/<user_id>/challenges/<challenge_id>', methods=['POST'])
-def user_challenge(challenge_id, user_id):
-    """
-        POST /challenges/<challenge_id>/user/<user_id>
-    :param challenge_id:
-    :param user_id:
-    :return:
-    """
-    # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
+# @app.route('/users/<user_id>/challenges/<challenge_id>', methods=['POST'])
+# def user_challenge(challenge_id, user_id):
+#     """
+#         POST /challenges/<challenge_id>/user/<user_id>
+#     :param challenge_id:
+#     :param user_id:
+#     :return:
+#     """
+#     # TODO: Prerna; Get users total step count from fitbit and set it to 'user_fitbit_total_steps' below
 
-    database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=1)
+#     database.user_challenge(user_id, challenge_id, user_fitbit_total_steps=1)
 
-    user = {
-        'challengeId': challenge_id,
-        'userId': user_id
-    }
-    return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+#     user = {
+#         'challengeId': challenge_id,
+#         'userId': user_id
+#     }
+#     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 
 @app.route('/challenges/_expire', methods=['POST'])
@@ -88,6 +104,7 @@ def expire_user_challenges():
         'userId': 333
     }]
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
+
 
 
 if __name__ == '__main__':

@@ -4,18 +4,17 @@
       <acme-navbar></acme-navbar>
     </header>
     
-    <md-progress-circular ng-show="vm.viewLoading" md-diameter="96"></md-progress-circular>
+    <md-progress-circular ng-show="challenge.viewLoading" md-diameter="96"></md-progress-circular>
 
-    <section class="jumbotron" ng-hide="main.viewLoading">
-      <h1>Welcome {{ main.currentUser.name }}!</h1>
-      <h3 ng-show="main.hasActiveChallenges()"> You have {{ main.activeChallenges.length }} active challenges!</h3>
-      <h3 ng-hide="main.hasActiveChallenges()"> Oh no! You haven't accepted any challenges yet.</h3> 
+    <section class="jumbotron" ng-hide="challenge.viewLoading">
+      <h3 ng-show="challenge.hasChallenges()"> You have {{ challenge.challenges.length }} challenges!</h3>
+      <h3 ng-hide="challenge.hasChallenges()"> Nothing to see here. Go for a jog and come back!</h3> 
     </section>
     <section layout="column">
       <md-card md-theme="default" md-theme-watch>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-display-4">{{ main.userActivity.steps }}</span>
+            <span class="md-display-4">{{ challenge.userActivity.steps }}</span>
             <span class="md-headline" flex>Steps</span>
             <span class="md-subhead">walked today.</span>
           </md-card-title-text>
@@ -25,7 +24,7 @@
       <md-card md-theme="default" md-theme-watch>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-display-4">{{ main.userActivity.calories }}</span>
+            <span class="md-display-4">{{ challenge.userActivity.calories }}</span>
             <span class="md-headline" flex>Calories</span>
             <span class="md-subhead">burned so far.</span>
           </md-card-title-text>

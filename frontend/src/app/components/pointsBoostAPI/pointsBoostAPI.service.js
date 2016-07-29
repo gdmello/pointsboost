@@ -2,12 +2,12 @@
   'use strict';
 
   angular
-    .module('pointsboost')
-    .factory('pointsBoostAPI', pointsBoostAPI);
+  .module('pointsboost')
+  .factory('pointsBoostAPI', pointsBoostAPI);
 
   /** @ngInject */
   function pointsBoostAPI($log, $http, $cookies) {
-    
+
     var USER_COOKIE = 'POINTSBOOST_USER';
 
     var apiHost = 'http://127.0.0.1:5000';
@@ -21,7 +21,8 @@
       logOut: logOut,
       newChallenges: newChallenges,
       acceptedChallenges: acceptedChallenges,
-      enrollInAChallenge: enrollInAChallenge
+      enrollInAChallenge: enrollInAChallenge,
+      userActivity: userActivity
     };
 
     return service;
@@ -49,8 +50,8 @@
     function user(fitbit_token) {
 
       return $http.post(apiHost + '/user?fitbit_token=' + fitbit_token)
-        .then(userComplete)
-        .catch(userFailed);
+      .then(userComplete)
+      .catch(userFailed);
 
       function userComplete(response) {
         var respJson = response.data;
@@ -59,18 +60,31 @@
       }
 
       function userFailed(error) {
-        $log.error('XHR Failed for user.\n' + angular.toJson(error.data, true));
+        $log.error('XHR Failed for user.\n' + angular.toJson(error.data, true))
       }
     }
 
+    function userActivity(user_id) {
+      if (!user_id) {
+        user_id = getCurrentUser().userId;
+      }
+
+      return $http.get(apiHost + '/user/' + user_id + '/activity').then(function (response) {
+        return response.data;
+      });
+    }
+
     function newChallenges(user_id) {
+      if (!user_id) {
+        user_id = getCurrentUser().userId;
+      }
 
       return $http.get(apiHost + '/user/' + user_id + '/challenges/_new')
-        .then(newChallengeList)
-        .catch(newChallengeGetFailed);
+      .then(newChallengeList)
+      .catch(newChallengeGetFailed);
 
       function newChallengeList(response) {
-        $log.info(angular.toJson(response.data));
+        return response.data;
       }
 
       function newChallengeGetFailed(error) {
@@ -79,13 +93,16 @@
     }
 
     function acceptedChallenges(user_id) {
+      if (!user_id) {
+        user_id = getCurrentUser().userId;
+      }
 
       return $http.get(apiHost + '/user/' + user_id + '/challenges/_accepted')
-        .then(acceptedChallengeList)
-        .catch(acceptedChallengeGetFailed);
+      .then(acceptedChallengeList)
+      .catch(acceptedChallengeGetFailed);
 
       function acceptedChallengeList(response) {
-        $log.info(angular.toJson(response.data));
+        return response.data;
       }
 
       function acceptedChallengeGetFailed(error) {
@@ -94,10 +111,13 @@
     }
 
     function enrollInAChallenge(user_id, challenge_id) {
+      if (!user_id) {
+        user_id = getCurrentUser().userId;
+      }
 
       return $http.post(apiHost + '/challenges/' + challenge_id + '/user/' + user_id)
-        .then(enrolledChallenge)
-        .catch(challengeEnrollmentFailed);
+      .then(enrolledChallenge)
+      .catch(challengeEnrollmentFailed);
 
       function enrolledChallenge(response) {
         $log.info(angular.toJson(response.data));

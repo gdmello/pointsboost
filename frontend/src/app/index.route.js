@@ -23,6 +23,28 @@
           factory: checkRouting
         }
       })
+      .when('/accepted-challenges', {
+        templateUrl: 'app/challenge/challenge.html',
+        controller: 'ChallengeController',
+        controllerAs: 'challenge',
+        resolve: {
+          factory: checkRouting,
+          challengeFn: function(pointsBoostAPI) {
+            return pointsBoostAPI.acceptedChallenges;
+          }
+        }
+      })
+      .when('/new-challenges', {
+        templateUrl: 'app/challenge/challenge.html',
+        controller: 'ChallengeController',
+        controllerAs: 'challenge',
+        resolve: {
+          factory: checkRouting,
+          challengeFn: function(pointsBoostAPI) {
+            return pointsBoostAPI.newChallenges;
+          }
+        }
+      })
       .otherwise({
         redirectTo: '/'
       });
