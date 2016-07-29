@@ -13,22 +13,23 @@ def fitbit_user():
 
     """
     access_token = request.args.get('access_token', '')
-    user_id = request.args.get('user_id', '')
+    logger.debug('Creating user with token %s', access_token)
+    fitbit_id = request.args.get('user_id', '')
     lifetimeSteps = get_steps(user_id, access_token)
     name = request.args.get('displayName', '')
-
-    user = {
-        'access_token': access_token,
-        'userId': user_id,
-        'name': name
-        'points_balance': lifetimeSteps
-    }
-
     # Get users fitbit email and points balance.
 
     #eg: https://api.fitbit.com/1/user/4KRQ6L/activities.json
 
     # Save the user model in the database
+    user_id = database.create_user(name=name, email='ezra.l@gmail.com', loyalty_program_user_id='GlobalRewards123',
+                         access_token=access_token, refresh_token='some refresh token',
+                         token_expiry='2016-10-01 12:12:12.777', fitbit_id=fitbit_id)
+
+    user = {
+        'access_token': access_token,
+        'userId': user_id
+    }
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
 def get_steps(user_id, access_token):
