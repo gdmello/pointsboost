@@ -1,12 +1,46 @@
-<md-toolbar layout="row" layout-align="center center">
-
-  <md-button href="https://github.com/Swiip/generator-gulp-angular">PointsBoost</md-button>
-
-  <section flex layout="row" layout-align="left center">
-    <md-button href="#/" class="md-raised">Home</md-button>
-    <md-button href="#/login" class="md-raised">{{ vm.loginButtonText }}</md-button>
-  </section>
-
-  <md-button class="acme-navbar-text">Application was created {{ vm.relativeDate }}.</md-button>
-
+<md-toolbar class="md-hue-2">
+	<div class="md-toolbar-tools">
+		<md-button class="md-icon-button" aria-label="Menu" ng-click="vm.openSideNav()">
+			<md-icon md-font-set="material-icons">menu</md-icon>
+		</md-button>
+		<h2>
+			<span>PointsBoost</span>
+		</h2>
+		<span flex></span>
+		<md-button class="md-icon-button" aria-label="More">
+			<md-icon md-font-set="material-icons">more_vert</md-icon>
+		</md-button>
+	</div>
 </md-toolbar>
+
+<md-sidenav class="md-sidenav-left" md-component-id="left" >
+	<user-card name="{{ vm.userName }}" description="{{ vm.userSummary }}" ng-if="vm.user"></user-card>
+  <md-content layout-padding>
+		<md-list flex>
+		<md-list-item class="md-2-line" ng-href="#/" layout="center center">
+				<md-icon class="material-icons">face</md-icon>
+				<div class="md-list-item-text" layout="column">
+					<h3>My Stats</h3>
+				</div>
+			</md-list-item>
+			<md-list-item class="md-2-line" ng-href="#/" layout="center center">
+				<md-icon class="material-icons">directions_run</md-icon>
+				<div class="md-list-item-text" layout="column">
+					<h3>Accepted Challenges</h3>
+				</div>
+			</md-list-item>
+			<md-list-item class="md-2-line" ng-href="#/" layout="center center">
+				<md-icon class="material-icons">local_activity</md-icon>
+				<div class="md-list-item-text" layout="column">
+					<h3>Available Challenges</h3>
+				</div>
+			</md-list-item>
+			<md-list-item class="md-2-line" ng-href="#/login"  layout="center center">
+				<md-icon md-font-set="material-icons">account_circle</md-icon>
+				<div class="md-list-item-text" layout="column">
+					<h3>{{ vm.loginButtonText }}</h3>
+				</div>
+			</md-list-item>
+		</md-list>
+	</md-content>
+</md-sidenav>

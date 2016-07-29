@@ -34,7 +34,9 @@ def fitbit_user():
 
     user = {
         'fitbitToken': fitbit_token,
-        'userId': user_id
+        'userId': user_id,
+        'name': 'Ezra Lampstand',
+        'points_balance': 42
     }
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
