@@ -35,9 +35,13 @@ def fitbit_user():
                                    access_token=access_token, refresh_token='some refresh token',
                                    token_expiry='2016-10-01 12:12:12.777', fitbit_id=fitbit_id)
 
+    #points_balance = lcp_query.get_balance(user_id)
+    points_balance = 549
     user = {
         'access_token': access_token,
-        'userId': user_id
+        'userId': user_id,
+        'name': name,
+        'points_balance': points_balance 
     }
     return Response(json.dumps(user), status=httplib.CREATED, mimetype='application/json')
 
