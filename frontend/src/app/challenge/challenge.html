@@ -7,28 +7,31 @@
     <md-progress-circular ng-show="challenge.viewLoading" md-diameter="96"></md-progress-circular>
 
     <section class="jumbotron" ng-hide="challenge.viewLoading">
+      <h1>Challenges.</h1>
       <h3 ng-show="challenge.hasChallenges()"> You have {{ challenge.challenges.length }} challenges!</h3>
       <h3 ng-hide="challenge.hasChallenges()"> Nothing to see here. Go for a jog and come back!</h3> 
     </section>
     <section layout="column">
-      <md-card md-theme="default" md-theme-watch>
+      <md-card ng-repeat="c in challenge.challenges">
+        <md-card-header>
+          <md-card-avatar>
+            <img class="md-user-avatar" src="http://image6.buzzintown.com/files/venue/upload_14000/upload_original/402752-booster-juice-garuda-mall.PNG"/>
+          </md-card-avatar>
+          <md-card-header-text>
+            <span class="md-title">Booster Juice</span>
+            <span class="md-subhead">Challenge Sponsor</span>
+          </md-card-header-text>
+        </md-card-header>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-display-4">{{ challenge.userActivity.steps }}</span>
-            <span class="md-headline" flex>Steps</span>
-            <span class="md-subhead">walked today.</span>
+            <span class="md-headline">{{ c.name }}</span>
+            <span class="md-subhead">Expires in {{ c.friendlyTime }}</span>
           </md-card-title-text>
         </md-card-title>
-      </md-card>
-        <md-divider></md-divider>
-      <md-card md-theme="default" md-theme-watch>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-display-4">{{ challenge.userActivity.calories }}</span>
-            <span class="md-headline" flex>Calories</span>
-            <span class="md-subhead">burned so far.</span>
-          </md-card-title-text>
-        </md-card-title>
+        <md-card-actions layout="row" layout-align="start center">
+          <md-button ng-click="challenge.acceptChallenge(c.challengeIdentifier)">Accept</md-button>
+          <md-button ng-click="challenge.rejectChallenge(c.challengeIdentifier)" class='md-hue-2'>Reject</md-button>
+        </md-card-actions>
       </md-card>
     </section>
 
