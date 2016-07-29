@@ -66,6 +66,15 @@ def create_user(name, email, loyalty_program_user_id, access_token, refresh_toke
     return user_id
 
 
+def update_user_token(user_id, token):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' UPDATE users
+                       SET fitbit_access_token=?
+                       WHERE identifier=?;''', (token, user_id))
+    connection.commit()
+    return user_id
+
 def get_user(user_id):
     connection = _connection()
     cursor = connection.cursor()
@@ -81,6 +90,22 @@ def get_user(user_id):
         fitbit_id=row[7]
     )
 
+def get_user_by_fitbit(id):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' SELECT * FROM users
+                      WHERE fitbit_id = ?
+                  ''', (id,))
+
+    row = cursor.fetchone()
+    if row is None:
+        return None
+    return dict(
+        userIdentifier=row[0],
+        name=row[2],
+        fitbit_access_token=row[4],
+        fitbit_id=row[7]
+    )
 
 def user_challenges(user_id, status='new'):
     cursor = _connection().cursor()
