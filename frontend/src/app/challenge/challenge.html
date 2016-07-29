@@ -29,8 +29,15 @@
           </md-card-title-text>
         </md-card-title>
         <md-card-actions layout="row" layout-align="start center">
-          <md-button ng-click="challenge.acceptChallenge(c.challengeIdentifier)" ng-hide="challenge.isAccepted">I'm up for it!</md-button>
-          <md-button ng-click="challenge.rejectChallenge(c.challengeIdentifier)" ng-show="challenge.isAccepted" class='md-hue-2'>Give Up</md-button>
+          <span flex></span>
+          <md-button class="md-raised md-primary" ng-click="challenge.acceptChallenge(c.challengeIdentifier)" ng-hide="challenge.isAccepted">
+            <md-icon class="material-icons">thumb_up</md-icon>
+            I'm up for it!
+          </md-button>
+          <md-button class="md-raised md-primary md-accent" ng-click="challenge.rejectChallenge(c.challengeIdentifier)" ng-show="challenge.isAccepted" class='md-hue-2'>
+          <md-icon class="material-icons">thumb_down</md-icon>
+          Give Up
+          </md-button>
         </md-card-actions>
       </md-card>
     </section>

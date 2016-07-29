@@ -6,7 +6,7 @@
   .controller('ChallengeController', ChallengeController);
 
   /** @ngInject */
-  function ChallengeController($timeout, $q, toastr, pointsBoostAPI, moment, fitBitAuth, challengeType) {
+  function ChallengeController($timeout, $q, $location, toastr, pointsBoostAPI, moment, fitBitAuth, challengeType) {
     var vm = this;
 
     vm.currentUser = pointsBoostAPI.getCurrentUser();
@@ -47,7 +47,7 @@
     vm.acceptChallenge = function(cid) {
       pointsBoostAPI.enrollInAChallenge(cid).then(function() {
         toastr.success('<p>Congrats! You have accepted this challenge.</p>', 'Challenge accepted!', {timeOut: 5000})
-        getChallenges();
+        $location.path('/accepted-challenges')
       })
     }
 

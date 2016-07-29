@@ -8,7 +8,6 @@
 
     <section class="jumbotron" ng-hide="main.viewLoading">
       <h1>Welcome {{ main.currentUser.name }}!</h1>
-      <h3 ng-show="main.hasActiveChallenges()"> You have {{ main.activeChallenges.length }} active challenges!</h3>
       <h3 ng-hide="main.hasActiveChallenges()"> Oh no! You haven't accepted any challenges yet.</h3> 
     </section>
     <section layout="column">
@@ -16,16 +15,22 @@
         <md-card-title>
           <md-card-title-text>
             <span class="md-display-4">{{ main.userActivity.steps }}</span>
+          </md-card-title-text>
+          <md-card-title-text>
+            <span flex></span>
             <span class="md-headline" flex>Steps</span>
             <span class="md-subhead">walked today.</span>
           </md-card-title-text>
         </md-card-title>
       </md-card>
-        <md-divider></md-divider>
+      <md-divider></md-divider>
       <md-card md-theme="default" md-theme-watch>
         <md-card-title>
           <md-card-title-text>
-            <span class="md-display-4">{{ main.userActivity.calories }}</span>
+            <span class="md-display-4">234</span>
+          </md-card-title-text>
+          <md-card-title-text>
+            <span flex></span>
             <span class="md-headline" flex>Calories</span>
             <span class="md-subhead">burned so far.</span>
           </md-card-title-text>
@@ -35,6 +40,9 @@
         <md-card-title>
           <md-card-title-text>
             <span class="md-display-4">{{ main.currentUser.points_balance }}</span>
+          </md-card-title-text>
+          <md-card-title-text>
+            <span flex></span>
             <span class="md-headline" flex>Points</span>
             <span class="md-subhead">earned so far.</span>
           </md-card-title-text>
