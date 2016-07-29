@@ -6,11 +6,16 @@
   .factory('pointsBoostAPI', pointsBoostAPI);
 
   /** @ngInject */
-  function pointsBoostAPI($log, $http, $cookies) {
+  function pointsBoostAPI($log, $http, $location, $cookies) {
 
     var USER_COOKIE = 'POINTSBOOST_USER';
 
-    var apiHost = 'http://127.0.0.1:5000';
+    if ($location.host().indexOf('local') != 0 || $location.host().indexOf('127.') != 0) {
+      var apiHost = 'http://127.0.0.1:5000';  
+    } else {
+      var apiHost = '/';
+    }
+    
     var currentUser = null;
 
     var service = {

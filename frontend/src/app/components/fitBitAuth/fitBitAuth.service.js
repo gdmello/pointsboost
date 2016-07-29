@@ -11,9 +11,15 @@
     var clientId = '227QRF'
     var clientSecret = 'aacdb90aaaa175c50e0556e1a50f35ab'
     var authScopes = ["activity", "nutrition", "heartrate", "location", "nutrition", "profile", "settings", "sleep", "social", "weight"]
-    var redirectUri = 'http://localhost:3000'
+    
+    if ($location.host().indexOf('local') != 0 || $location.host().indexOf('127.') != 0) {
+      var redirectUri = 'http://localhost:3000/';  
+    } else {
+      var redirectUri = window.location.protocol + "//" + window.location.host + "/dist";
+    }
+    
     var authorizeUri = 'https://www.fitbit.com/oauth2/authorize'
-
+    console.log($location.path())
     var accessToken = "";
     var _authCheckTimer = null;
 
