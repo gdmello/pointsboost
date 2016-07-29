@@ -66,6 +66,15 @@ def create_user(name, email, loyalty_program_user_id, access_token, refresh_toke
     return user_id
 
 
+def get_user(user_id):
+    connection = _connection()
+    cursor = connection.cursor()
+    cursor.execute(''' SELECT * FROM users
+                      WHERE user_id = ?
+                  ''', (user_id,))
+    return cursor.fetchone()
+
+
 def user_challenges(user_id, status='new'):
     cursor = _connection().cursor()
     if status == 'new':
